@@ -18,8 +18,7 @@ namespace SimpleCompiler
             lAssembly.Insert(1, "D=A");
             lAssembly.Insert(2, "@LCL");
             lAssembly.Insert(3, "M=D");
-            int x = 2;
-            x++;
+
 
         }
         static void Test1()
