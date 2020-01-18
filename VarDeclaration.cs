@@ -65,8 +65,14 @@ namespace SimpleCompiler
 
         public override void Parse(TokensStack sTokens)
         {
-            //parsing code from assignment 3.2 here
-            throw new NotImplementedException();
+            Token tVar = sTokens.Pop();
+            if (!(tVar is Statement) || (((Statement)tVar).Name != "var"))
+                throw new SyntaxErrorException("Expected var, received " + tVar, tVar);
+            SetTypeAndName(sTokens.Pop(), sTokens.Pop());
+            Token tEnd = sTokens.Pop();
+            if (!(tEnd is Separator) || (((Separator)tEnd).Name != ';'))
+                throw new SyntaxErrorException("Expected ; received " + tEnd, tEnd);
+
         }
 
         public override string ToString()
