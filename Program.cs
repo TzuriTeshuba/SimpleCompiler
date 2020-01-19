@@ -21,6 +21,32 @@ namespace SimpleCompiler
 
 
         }
+        static void TestSimplifyLetStatement()
+        {
+            string strExpression = "(((a + b) - (c - d)) + (e - (f + g)))";
+
+            Compiler c = new Compiler();
+            List<Token> tokensList = c.Tokenize(strExpression, 0);
+            TokensStack tokens= new TokensStack();
+            for(int i = tokensList.Count - 1; i >= 0; i--)
+            {
+                tokens.Push(tokensList[i]);
+            }
+            LetStatement example = new LetStatement();
+            Expression expression = Expression.Create(tokens);
+            expression.Parse(tokens);
+            LetStatement let = new LetStatement();
+            let.Variable = "x";
+            let.Value = expression;
+            List<LetStatement> letStatements = c.SimplifyExpressions(let, null);
+            for(int i=0; i< letStatements.Count; i++)
+            {
+                Console.WriteLine(letStatements[i]);
+            }
+
+
+
+        }
         static void Test1()
         {
             Compiler c = new Compiler();
@@ -156,7 +182,7 @@ namespace SimpleCompiler
 
         static void Main(string[] args)
         {
-            Test3();
+            TestSimplifyLetStatement();
             //TestParseAndErrors();
         }
 

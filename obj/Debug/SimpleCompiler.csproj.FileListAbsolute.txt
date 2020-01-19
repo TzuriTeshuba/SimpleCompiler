@@ -32,3 +32,4 @@ D:/Teaching/ECS/2017/Ex3.3/Solution/obj/Debug/ExpressionCompiler.pdb
 /Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/bin/Debug/ExpressionCompiler.pdb
 /Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/obj/Debug/ExpressionCompiler.exe
 /Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/obj/Debug/ExpressionCompiler.pdb
+/Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/obj/Debug/SimpleCompiler.csprojAssemblyReference.cache

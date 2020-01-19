@@ -1,19 +1,19 @@
 ﻿<Properties StartupConfiguration="{3FBFBD51-DF08-493B-8D74-5E9E1CE7B1DF}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Compiler.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
     <Files>
-      <File FileName="Program.cs" Line="40" Column="47" />
-      <File FileName="Compiler.cs" Line="125" Column="1" />
+      <File FileName="Compiler.cs" Line="242" Column="49" />
       <File FileName="LetStatement.cs" />
       <File FileName="BinaryOperationExpression.cs" />
       <File FileName="Expression.cs" />
-      <File FileName="Contant.cs" Line="12" Column="25" />
+      <File FileName="Contant.cs" />
+      <File FileName="Program.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="SimpleCompiler" expanded="True">
             <Node name="SimpleCompiler" expanded="True">
-              <Node name="Compiler.cs" selected="True" />
+              <Node name="Program.cs" selected="True" />
             </Node>
           </Node>
         </State>

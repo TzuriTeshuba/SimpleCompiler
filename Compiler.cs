@@ -119,12 +119,6 @@ namespace SimpleCompiler
             //check that all vars appear in vardeclarations
             List<LetStatement> output = new List<LetStatement>();
 
-
-
-
-
-
-
             if (s.Value is BinaryOperationExpression)
             {
                 //init data
@@ -138,13 +132,12 @@ namespace SimpleCompiler
                 BinaryOperationExpression binExp = (BinaryOperationExpression)(s.Value);
                 BinaryOperationExpression binVal = new BinaryOperationExpression();
 
-                // let OPERATOR1 = _i
+                // let OPERATOR1 = _xxx
                 VariableExpression var1 = makeVariable("_" + registers[binExp.Operand1]);
                 binVal.Operand1 = var1;
                 LetStatement letOP1 = makeLetStatement("OPERATOR1", var1);
 
-
-                // let OPERATOR2 = _j
+                // let OPERATOR2 = _yyy
                 VariableExpression var2 = makeVariable("_" + registers[binExp.Operand2]);
                 binVal.Operand2 = var2;
                 LetStatement letOP2 = makeLetStatement("OPERATOR2", var2);
@@ -162,15 +155,9 @@ namespace SimpleCompiler
             }
             else
             {
-
+                //need to put in RESULT???
+                output.Add(s);
             }
-
-
-
-
-
-
-
 
             return output;
         }
