@@ -23,6 +23,14 @@ namespace SimpleCompiler
         }
         static void TestSimplifyLetStatement()
         {
+            List<VarDeclaration> varDecs = new List<VarDeclaration>();
+            
+            char chr = 'a';
+            while(chr <= 'g')
+            {
+                VarDeclaration varDec = new VarDeclaration(null, ""+chr);
+                varDecs.Add(varDec);
+            }
             string strExpression = "(((a + b) - (c - d)) + (e - (f + g)))";
 
             Compiler c = new Compiler();
@@ -38,7 +46,7 @@ namespace SimpleCompiler
             LetStatement let = new LetStatement();
             let.Variable = "x";
             let.Value = expression;
-            List<LetStatement> letStatements = c.SimplifyExpressions(let, null);
+            List<LetStatement> letStatements = c.SimplifyExpressions(let, varDecs);
             for(int i=0; i< letStatements.Count; i++)
             {
                 Console.WriteLine(letStatements[i]);
@@ -182,6 +190,7 @@ namespace SimpleCompiler
 
         static void Main(string[] args)
         {
+            Console.WriteLine("Program Started");
             TestSimplifyLetStatement();
             //TestParseAndErrors();
         }
