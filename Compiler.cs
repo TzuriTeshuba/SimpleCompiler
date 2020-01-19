@@ -117,51 +117,109 @@ namespace SimpleCompiler
             //add here code to simply expressins in a statement. 
             //add var declarations for artificial variables.
             //check that all vars appear in vardeclarations
-
-            //
-            //fix for allowing first expression to be binary
-            //
-
-            numVirtualVars = 0;
-            Dictionary<Expression, int> registers = new Dictionary<Expression, int>();
-            initVirtualIds(s.Value, registers);
-            Stack<LetStatement> lets = initLetStatements(s.Value, registers);
             List<LetStatement> output = new List<LetStatement>();
-            while (lets.Count > 0)
-                output.Add(lets.Pop());
+
+
+
+
+
+
+
+            if (s.Value is BinaryOperationExpression)
+            {
+                //init data
+                numVirtualVars = 0;
+                Dictionary<Expression, int> registers = new Dictionary<Expression, int>();
+                initVirtualIds(s.Value, registers);
+                Stack<LetStatement> lets = new Stack<LetStatement>();
+                initLetStatements(s.Value, registers, lets);
+
+
+                BinaryOperationExpression binExp = (BinaryOperationExpression)(s.Value);
+                BinaryOperationExpression binVal = new BinaryOperationExpression();
+
+                // let OPERATOR1 = _i
+                VariableExpression var1 = makeVariable("_" + registers[binExp.Operand1]);
+                binVal.Operand1 = var1;
+                LetStatement letOP1 = makeLetStatement("OPERATOR1", var1);
+
+
+                // let OPERATOR2 = _j
+                VariableExpression var2 = makeVariable("_" + registers[binExp.Operand2]);
+                binVal.Operand2 = var2;
+                LetStatement letOP2 = makeLetStatement("OPERATOR2", var2);
+
+                // let RESULT= _1
+                LetStatement letResult =  makeLetStatement("RESULT", makeVariable("_" + registers[s.Value]));
+
+                while (lets.Count > 0)
+                    output.Add(lets.Pop());
+
+                output.Add(letOP1);
+                output.Add(letOP2);
+                output.Add(letResult);
+
+            }
+            else
+            {
+
+            }
+
+
+
+
+
+
+
 
             return output;
         }
 
-
+        public VariableExpression makeVariable(string s)
+        {
+            VariableExpression output = new VariableExpression();
+            output.Name = s;
+            return output;
+        }
+        public LetStatement makeLetStatement(string var, Expression value)
+        {
+            LetStatement output = new LetStatement();
+            output.Variable = var;
+            output.Value = value;
+            return output;
+        }
 
         //called after initVirtualIds(...)
-        private Stack<LetStatement> initLetStatements(Expression expression, Dictionary<Expression,int> registers)
+        private void initLetStatements(Expression expression, Dictionary<Expression, int> registers, Stack<LetStatement> stack)
         {
-            Stack<LetStatement> output = new Stack<LetStatement>();
+
             LetStatement letStatement = new LetStatement();
             letStatement.Variable = "_" + registers[expression];
-            for (int i = 0; i < registers.Count; i++)
+
+            if (expression is VariableExpression || expression is NumericExpression)
             {
-                if (expression is VariableExpression || expression is NumericExpression)
-                {
-                    letStatement.Value = expression;
-                }
-                else
-                {
-                    BinaryOperationExpression binExp = (BinaryOperationExpression)expression;
-                    BinaryOperationExpression value = new BinaryOperationExpression();
-                    VariableExpression varExp1 = new VariableExpression();
-                    VariableExpression varExp2 = new VariableExpression();
-                    varExp1.Name = "_" + registers[binExp.Operand1];
-                    varExp2.Name = "_" + registers[binExp.Operand2];
-                    value.Operand1 = varExp1;
-                    value.Operand2 = varExp2;
-                    letStatement.Value = value;
-                }
-                output.Push(letStatement);
+                letStatement.Value = expression;
+                stack.Push(letStatement);
             }
-            return output;
+            else
+            {
+                BinaryOperationExpression binExp = (BinaryOperationExpression)expression;
+
+                BinaryOperationExpression value = new BinaryOperationExpression();
+                VariableExpression varExp1 = new VariableExpression();
+                VariableExpression varExp2 = new VariableExpression();
+                value.Operator = binExp.Operator;
+                varExp1.Name = "_" + registers[binExp.Operand1];
+                varExp2.Name = "_" + registers[binExp.Operand2];
+                value.Operand1 = varExp1;
+                value.Operand2 = varExp2;
+                letStatement.Value = value;
+                stack.Push(letStatement);
+                initLetStatements(binExp.Operand1, registers, stack);
+                initLetStatements(binExp.Operand2, registers, stack);
+
+            }
+
         }
 
         private void initVirtualIds(Expression expression, Dictionary<Expression,int> registers)
@@ -173,6 +231,8 @@ namespace SimpleCompiler
             }
             else
             {
+                numVirtualVars++;
+                registers.Add(expression, numVirtualVars);
                 BinaryOperationExpression binaryExpression = (BinaryOperationExpression)expression;
                 initVirtualIds(binaryExpression.Operand1, registers);
                 initVirtualIds(binaryExpression.Operand2, registers);

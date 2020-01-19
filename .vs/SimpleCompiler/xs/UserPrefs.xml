@@ -2,10 +2,11 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Compiler.cs">
     <Files>
       <File FileName="Program.cs" Line="40" Column="47" />
-      <File FileName="Compiler.cs" Line="190" Column="17" />
-      <File FileName="LetStatement.cs" Line="1" Column="1" />
-      <File FileName="BinaryOperationExpression.cs" Line="13" Column="21" />
-      <File FileName="Expression.cs" Line="9" Column="27" />
+      <File FileName="Compiler.cs" Line="125" Column="1" />
+      <File FileName="LetStatement.cs" />
+      <File FileName="BinaryOperationExpression.cs" />
+      <File FileName="Expression.cs" />
+      <File FileName="Contant.cs" Line="12" Column="25" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
