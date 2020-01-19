@@ -11,6 +11,12 @@ namespace SimpleCompiler
 {
     class Program
     {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Program Started");
+            TestSimplifyLetStatement();
+            //TestParseAndErrors();
+        }
 
         static void InitLCL(List<string> lAssembly)
         {
@@ -30,7 +36,10 @@ namespace SimpleCompiler
             {
                 VarDeclaration varDec = new VarDeclaration(null, ""+chr);
                 varDecs.Add(varDec);
+                chr++;
             }
+            VarDeclaration x = new VarDeclaration(null, "x");
+            varDecs.Add(x);
             string strExpression = "(((a + b) - (c - d)) + (e - (f + g)))";
 
             Compiler c = new Compiler();
@@ -52,7 +61,7 @@ namespace SimpleCompiler
                 Console.WriteLine(letStatements[i]);
             }
 
-
+            Console.WriteLine("Simplifying Expressions completetd");
 
         }
         static void Test1()
@@ -188,12 +197,7 @@ namespace SimpleCompiler
 
 
 
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Program Started");
-            TestSimplifyLetStatement();
-            //TestParseAndErrors();
-        }
+
 
  
      }

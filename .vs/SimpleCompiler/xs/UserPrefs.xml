@@ -2,24 +2,13 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Compiler.cs">
     <Files>
       <File FileName="Compiler.cs" Line="171" Column="1" />
-      <File FileName="Program.cs" Line="193" Column="47" />
+      <File FileName="Program.cs" />
       <File FileName="LetStatement.cs" />
       <File FileName="BinaryOperationExpression.cs" />
       <File FileName="Expression.cs" />
       <File FileName="Contant.cs" />
-      <File FileName="VarDeclaration.cs" Line="22" Column="1" />
+      <File FileName="VarDeclaration.cs" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State name="__root__">
-          <Node name="SimpleCompiler" expanded="True">
-            <Node name="SimpleCompiler" expanded="True">
-              <Node name="Compiler.cs" selected="True" />
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

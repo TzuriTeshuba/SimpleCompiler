@@ -118,6 +118,11 @@ namespace SimpleCompiler
             //add var declarations for artificial variables.
             //check that all vars appear in vardeclarations
             List<LetStatement> output = new List<LetStatement>();
+            //first check that all vars in expression were declared;
+            List<string> varNames = new List<string>();
+            foreach (VarDeclaration varDec in lVars) varNames.Add(varDec.Name);
+            if (!varNames.Contains(s.Variable)) throw new Exception(" the variable " + s.Variable + " was never defined in expression " + s);
+            CheckThatAllVariablesWereDeclared(s.Value, varNames);
 
             if (s.Value is BinaryOperationExpression)
             {
@@ -160,6 +165,21 @@ namespace SimpleCompiler
             }
 
             return output;
+        }
+        private bool CheckThatAllVariablesWereDeclared(Expression expression, List<string> varNames)
+        {
+            bool output;
+            if (!(expression is BinaryOperationExpression))
+            {
+                output = varNames.Contains(expression.ToString());
+            }
+            else
+            {
+                BinaryOperationExpression binExp = (BinaryOperationExpression)expression;
+                output = ((CheckThatAllVariablesWereDeclared(binExp.Operand1, varNames)) && (CheckThatAllVariablesWereDeclared(binExp.Operand2, varNames)));
+            }
+            if (!output) throw new Exception("the variable " + expression + " was never declared");
+            return true;
         }
 
         public VariableExpression makeVariable(string s)
