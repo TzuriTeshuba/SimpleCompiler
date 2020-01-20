@@ -58,8 +58,54 @@ namespace SimpleCompiler
         public List<string> GenerateCode(LetStatement aSimple, Dictionary<string, int> dSymbolTable)
         {
             List<string> lAssembly = new List<string>();
+            int varIndex = dSymbolTable[aSimple.Value.ToString()];
             //add here code for computing a single let statement containing only a simple expression
+            Expression value = aSimple.Value;
+            if(value is NumericExpression)
+            {
+                NumericExpression numExp = (NumericExpression)value;
+                lAssembly.Add( "@" + numExp.Value);
+                lAssembly.Add("D=A");
+                lAssembly.Add("@" + varIndex);
+                lAssembly.Add("M=D");
+            }
+            else if(value is VariableExpression)
+            {
+                VariableExpression varExp = (VariableExpression)value;
+                int valuesIndex = dSymbolTable[varExp.ToString()];
+                lAssembly.Add("@" + valuesIndex);
+                lAssembly.Add("D=M");
+                lAssembly.Add("@" + varIndex);
+                lAssembly.Add("M=D");
+            }
+            else if(value is BinaryOperationExpression)
+            {
+                //initialize resources
+                BinaryOperationExpression binExp = (BinaryOperationExpression)value;
+                bool leftIsVar  = binExp.Operand1 is VariableExpression;
+                bool rightIsVar = binExp.Operand2 is VariableExpression;
+                char left = 'A';
+                char right = 'A';
+                int lAddress = dSymbolTable[binExp.Operand1.ToString()];
+                int rAddress = dSymbolTable[binExp.Operand2.ToString()];
+                if (leftIsVar) left = 'M';
+                if(rightIsVar) right = 'M';
 
+                //Example: a = first + second
+                //a=first and then a=a+second
+                lAssembly.Add("@" + lAddress);
+                lAssembly.Add("D="+left);
+                lAssembly.Add("@" + varIndex);
+                lAssembly.Add("M=D");
+
+                lAssembly.Add("@" + rAddress);
+                lAssembly.Add("D=" + right);
+                lAssembly.Add("@" + varIndex);
+                lAssembly.Add("M=M+D");
+            }
+
+
+          
             return lAssembly;
         }
 

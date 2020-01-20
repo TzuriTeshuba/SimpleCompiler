@@ -13,9 +13,10 @@ namespace SimpleCompiler
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Program Started");
-            TestSimplifyLetStatement();
+            Console.WriteLine("Program Started bro");
+            //TestSimplifyLetStatement();
             //TestParseAndErrors();
+            //Test1();
         }
 
         static void InitLCL(List<string> lAssembly)
