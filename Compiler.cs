@@ -72,7 +72,7 @@ namespace SimpleCompiler
 
                 lAssembly.Add("@" + numExp.Value);
                 lAssembly.Add("D=A");
-                lAssembly.Add("@RESULT");
+                lAssembly.Add("@_aAddress");
                 lAssembly.Add("A=M");
                 lAssembly.Add("M=D");
                 lAssembly.Add("@RESULT");
@@ -161,7 +161,7 @@ namespace SimpleCompiler
                 {
                     VariableExpression c = (VariableExpression)operand2;
                     lAssembly.Add("@LCL");
-                    lAssembly.Add("@D=M");
+                    lAssembly.Add("D=M");
                     lAssembly.Add("@"+dSymbolTable[c.Name]);
                     lAssembly.Add("A=D+A");
                     lAssembly.Add("D=M");
@@ -203,9 +203,9 @@ namespace SimpleCompiler
             //throw an exception if a var with the same name is defined more than once
             dTable.Add("OPERAND1",96);
             dTable.Add("OPERAND2", 97);
-            dTable.Add("RESULT", 0);
-            dTable.Add("_aAddress", 1);
-            int numVars = 2;
+            dTable.Add("_aAddress", 98);
+            dTable.Add("RESULT", 99);
+            int numVars = 0;
             for(int i = 0; i < lDeclerations.Count; i++)
             {
                 VarDeclaration varDec = lDeclerations[i];
@@ -214,6 +214,7 @@ namespace SimpleCompiler
                 if (name[0] != '_')
                 {
                     dTable.Add(name, numVars);
+                    numVars++;
                 }
             }
             for (int i = 0; i <= numVirtualVars; i++)

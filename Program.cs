@@ -102,7 +102,7 @@ namespace SimpleCompiler
             List<string> lAssignments = new List<string>();
             lAssignments.Add("let x = 10;");
             lAssignments.Add("let y = 15;");
-            lAssignments.Add("let z = (x + y);");
+            //lAssignments.Add("let z = (x + y);");
 
             List<LetStatement> ls = c.ParseAssignments(lAssignments);
 
