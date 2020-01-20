@@ -13,10 +13,10 @@ namespace SimpleCompiler
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Test 4 started running bro");
+            Console.WriteLine("Test 1 started running bro");
             //TestSimplifyLetStatement();
             //TestParseAndErrors();
-            Test4();
+            Test1();
         }
 
         static void InitLCL(List<string> lAssembly)
@@ -155,7 +155,8 @@ namespace SimpleCompiler
             List<string> lAssignments = new List<string>();
             lAssignments.Add("let x1 = 1;");
             lAssignments.Add("let x2 = 3;");
-            lAssignments.Add("let x3 = (((x1 + 1) - 4) + ((x2 + x1) - 2));");
+            lAssignments.Add("let x3 = 0;");
+            //lAssignments.Add("let x3 = (((x1 + 1) - 4) + ((x2 + x1) - 2));");
             lAssignments.Add("let x4 = ((x2 + x3) - (x2 -7));");
             lAssignments.Add("let x5 = (1000 - ((x1 + (((((x2 + x3) - x4) + x1) - x2) + x3)) - ((x1 - x2) + x4)));");
 
@@ -190,6 +191,7 @@ namespace SimpleCompiler
             InitLCL(lAssembly);
             cpu.Code = lAssembly;
             cpu.Run(1000, false);
+            var blah = cpu.M[24];
             if (cpu.M[24] != dValues2["x5"])
                 Console.WriteLine("BUGBUG");
             Console.WriteLine("End");

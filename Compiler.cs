@@ -11,8 +11,8 @@ namespace SimpleCompiler
     {
         private char[] delimitters;
         private int numVirtualVars;
-        const int LCL=21;
-        const int RESULT = LCL - 1;
+        //int LCL=1;
+        //int RESULT=0;
 
 
 
@@ -56,69 +56,138 @@ namespace SimpleCompiler
             return lParsed;
         }
 
- 
+        private List<string> GenerateCodeForUnaryAssignment(LetStatement aSimple, Dictionary<string, int> dSymbolTable)
+        {
+            List<string> lAssembly = new List<string>();
+            //add here code for computing a single let statement containing only a simple expression
+            Expression value = aSimple.Value;
+            if (value is NumericExpression)
+            {
+                NumericExpression numExp = (NumericExpression)value;
+
+                //next 8 lines rep @var
+                lAssembly.Add("@LCL");
+                lAssembly.Add("D=M");
+                lAssembly.Add("@" + dSymbolTable[aSimple.Variable]);
+                lAssembly.Add("D=A+D");//D=a's address
+                lAssembly.Add("@_aAddress");
+                lAssembly.Add("M=D");
+                lAssembly.Add("@RESULT");
+                lAssembly.Add("M=D");
+
+                lAssembly.Add("@" + numExp.Value);
+                lAssembly.Add("D=A");
+                lAssembly.Add("@RESULT");
+                lAssembly.Add("A=M");
+                lAssembly.Add("M=D");
+                lAssembly.Add("@RESULT");
+                lAssembly.Add("M=D");
+
+            }
+            else if (value is VariableExpression)
+            {
+                //Example: let a = b;
+                //LCL[a]=LCL[b]
+                VariableExpression varExp = (VariableExpression)value;
+                int valuesIndex = dSymbolTable[varExp.ToString()];
+
+                //first store value of LCL[b] in RESULT
+                lAssembly.Add("@LCL");
+                lAssembly.Add("D=M");
+                lAssembly.Add("@" + dSymbolTable[varExp.ToString()]);
+                lAssembly.Add("A=D+A");
+                lAssembly.Add("D=M");
+                lAssembly.Add("@RESULT");
+                lAssembly.Add("M=D");
+
+                //next store a's address in virtual register "aAddress"
+                lAssembly.Add("@LCL");
+                lAssembly.Add("D=M");
+                lAssembly.Add("@" + dSymbolTable[value.ToString()]);
+                lAssembly.Add("D=D+A");
+                lAssembly.Add("@_aAddress");
+                lAssembly.Add("M=D");
+
+                //update "a"
+                lAssembly.Add("@RESULT");
+                lAssembly.Add("D=M");
+                lAssembly.Add("@_aAddress");
+                lAssembly.Add("A=M");
+                lAssembly.Add("M=D");
+                lAssembly.Add("M=D");
+
+            }
+
+            return lAssembly;
+        }
+
+
+
 
         public List<string> GenerateCode(LetStatement aSimple, Dictionary<string, int> dSymbolTable)
         {
-            const int LCL = 20;
-            
+
+
             List<string> lAssembly = new List<string>();
-            int varIndex =LCL + dSymbolTable[aSimple.Variable.ToString()];
             //add here code for computing a single let statement containing only a simple expression
             Expression value = aSimple.Value;
-            if(value is NumericExpression)
+            string variable = aSimple.Variable;
+            if(value is NumericExpression | value is VariableExpression)
             {
-                NumericExpression numExp = (NumericExpression)value;
-                lAssembly.Add( "@" + numExp.Value);
-                lAssembly.Add("D=A");
-                lAssembly.Add("@" + varIndex);
-                lAssembly.Add("M=D");
-            }
-            else if(value is VariableExpression)
-            {
-                VariableExpression varExp = (VariableExpression)value;
-                int valuesIndex = dSymbolTable[varExp.ToString()];
-                lAssembly.Add("@" + valuesIndex);
-                lAssembly.Add("D=M");
-                lAssembly.Add("@" + varIndex);
-                lAssembly.Add("M=D");
+                return GenerateCodeForUnaryAssignment(aSimple, dSymbolTable);
             }
             else if(value is BinaryOperationExpression)
             {
-                //initialize resources
+                //
+                //Example: a = b <op> c
+                //first let a=b
+                //next  let a=a <op> c
+                //
                 BinaryOperationExpression binExp = (BinaryOperationExpression)value;
-                bool leftIsVar  = binExp.Operand1 is VariableExpression;
-                bool rightIsVar = binExp.Operand2 is VariableExpression;
-                char left = 'A';
-                char right = 'A';
-                int lAddress = LCL+ dSymbolTable[binExp.Operand1.ToString()];
-                int rAddress = LCL + dSymbolTable[binExp.Operand2.ToString()];
-                if (leftIsVar) left = 'M';
-                if(rightIsVar) right = 'M';
-                string oper = binExp.Operator;
+                Expression operand1 = binExp.Operand1;
+                Expression operand2 = binExp.Operand2;
+                LetStatement letAEqualB = makeLetStatement(variable, operand1);
 
+                //let a=b
+                lAssembly.AddRange(GenerateCodeForUnaryAssignment(letAEqualB, dSymbolTable));
 
-                //Example: a = first + second
-                //a=first and then a=a+second
-                lAssembly.Add("@" + lAddress);
-                lAssembly.Add("D="+left);
-                lAssembly.Add("@" + varIndex);
-                lAssembly.Add("M=D");
-
-                lAssembly.Add("@" + rAddress);
-                lAssembly.Add("D=" + right);
-                lAssembly.Add("@" + varIndex);
-                lAssembly.Add("M=M"+oper+"D");
-            }
-
-
-          
+                //let a = a <op> c
+                if(operand2 is NumericExpression)
+                {
+                    NumericExpression num = (NumericExpression)operand2;
+                    lAssembly.Add("@"+num.Value);
+                    lAssembly.Add("D=A");
+                    lAssembly.Add("@_aAddress");
+                    lAssembly.Add("M=M"+binExp.Operator+"D");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("@RESULT");
+                    lAssembly.Add("M=D");
+                }
+                else if(operand2 is VariableExpression)
+                {
+                    VariableExpression c = (VariableExpression)operand2;
+                    lAssembly.Add("@LCL");
+                    lAssembly.Add("@D=M");
+                    lAssembly.Add("@"+dSymbolTable[c.Name]);
+                    lAssembly.Add("A=D+A");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("@RESULT");
+                    lAssembly.Add("M=M"+binExp.Operator+"D");
+                    lAssembly.Add("D=M");
+                    lAssembly.Add("@_aAddress");
+                    lAssembly.Add("M=D");
+                    lAssembly.Add("@RESULT");
+                    lAssembly.Add("M=D");
+                }
+            }       
             return lAssembly;
         }
 
 
         public Dictionary<string, int> ComputeSymbolTable(List<VarDeclaration> lDeclerations)
         {
+
+
             const int virtaulsAddress = 100;
             Dictionary<string, int> dTable = new Dictionary<string, int>();
             //add here code to comptue a symbol table for the given var declarations
@@ -129,10 +198,11 @@ namespace SimpleCompiler
             //var int y;
             //the resulting table should be x=0,y=1,_1=2
             //throw an exception if a var with the same name is defined more than once
-            dTable.Add("RESULT", LCL-1);
             dTable.Add("OPERAND1",96);
             dTable.Add("OPERAND2", 97);
-            int numVars = 0;
+            dTable.Add("RESULT", 0);
+            dTable.Add("_aAddress", 1);
+            int numVars = 2;
             for(int i = 0; i < lDeclerations.Count; i++)
             {
                 VarDeclaration varDec = lDeclerations[i];
@@ -170,7 +240,7 @@ namespace SimpleCompiler
             //first check that all vars in expression were declared;
             List<string> varNames = new List<string>();
             foreach (VarDeclaration varDec in lVars) varNames.Add(varDec.Name);
-            if (!varNames.Contains(s.Variable)) throw new Exception(" the variable " + s.Variable + " was never defined in expression " + s);
+            if (!varNames.Contains(s.Variable)) throw new SyntaxErrorException(" the variable " + s.Variable + " was never defined in expression " + s, new Token());
             CheckThatAllVariablesWereDeclared(s.Value, varNames);
 
             if (s.Value is BinaryOperationExpression)
@@ -231,7 +301,7 @@ namespace SimpleCompiler
                 BinaryOperationExpression binExp = (BinaryOperationExpression)expression;
                 output = ((CheckThatAllVariablesWereDeclared(binExp.Operand1, varNames)) && (CheckThatAllVariablesWereDeclared(binExp.Operand2, varNames)));
             }
-            if (!output) throw new Exception("the variable " + expression + " was never declared");
+            if (!output) throw new SyntaxErrorException("the variable " + expression + " was never declared", new Token());
             return true;
         }
 
