@@ -109,6 +109,9 @@ namespace SimpleCompiler
                 if (sLine.StartsWith("@"))
                 {
                     string sValue = sLine.Substring(1);
+                    if (sValue == "RESULT"){
+                        string debugSpot = "debug here";
+                    }
                     int iValue = 0;
                     if (int.TryParse(sValue, out iValue))
                         A = iValue;

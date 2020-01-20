@@ -11,11 +11,6 @@ namespace SimpleCompiler
     {
         private char[] delimitters;
         private int numVirtualVars;
-        //int LCL=1;
-        //int RESULT=0;
-
-
-
 
         public Compiler()
         {
@@ -114,7 +109,6 @@ namespace SimpleCompiler
                 lAssembly.Add("@_aAddress");
                 lAssembly.Add("A=M");
                 lAssembly.Add("M=D");
-                lAssembly.Add("M=D");
 
             }
 
@@ -134,9 +128,9 @@ namespace SimpleCompiler
             string variable = aSimple.Variable;
             if(value is NumericExpression | value is VariableExpression)
             {
-                return GenerateCodeForUnaryAssignment(aSimple, dSymbolTable);
+                lAssembly.AddRange( GenerateCodeForUnaryAssignment(aSimple, dSymbolTable));
             }
-            else if(value is BinaryOperationExpression)
+            if(value is BinaryOperationExpression)
             {
                 //
                 //Example: a = b <op> c
@@ -179,7 +173,16 @@ namespace SimpleCompiler
                     lAssembly.Add("@RESULT");
                     lAssembly.Add("M=D");
                 }
-            }       
+
+            }
+            //Add RESULT to LCL[0]
+            lAssembly.Add("@RESULT");
+            lAssembly.Add("D=M");
+            lAssembly.Add("@LCL");
+            lAssembly.Add("A=M");
+            lAssembly.Add("M=D");
+
+
             return lAssembly;
         }
 
