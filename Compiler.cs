@@ -58,7 +58,7 @@ namespace SimpleCompiler
         public List<string> GenerateCode(LetStatement aSimple, Dictionary<string, int> dSymbolTable)
         {
             List<string> lAssembly = new List<string>();
-            int varIndex = dSymbolTable[aSimple.Value.ToString()];
+            int varIndex = dSymbolTable[aSimple.Variable.ToString()];
             //add here code for computing a single let statement containing only a simple expression
             Expression value = aSimple.Value;
             if(value is NumericExpression)
@@ -90,6 +90,8 @@ namespace SimpleCompiler
                 int rAddress = dSymbolTable[binExp.Operand2.ToString()];
                 if (leftIsVar) left = 'M';
                 if(rightIsVar) right = 'M';
+                string oper = binExp.Operator;
+
 
                 //Example: a = first + second
                 //a=first and then a=a+second
@@ -101,7 +103,7 @@ namespace SimpleCompiler
                 lAssembly.Add("@" + rAddress);
                 lAssembly.Add("D=" + right);
                 lAssembly.Add("@" + varIndex);
-                lAssembly.Add("M=M+D");
+                lAssembly.Add("M=M"+oper+"D");
             }
 
 
