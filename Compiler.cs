@@ -196,8 +196,11 @@ namespace SimpleCompiler
                 binVal.Operand2 = var2;
                 LetStatement letOP2 = makeLetStatement("OPERAND2", var2);
 
-                // let RESULT= _1
+                // let RESULT= _1 and variable=RESULT
                 LetStatement letResult =  makeLetStatement("RESULT", makeVariable("_" + registers[s.Value]));
+                LetStatement letVar = makeLetStatement(s.Variable, makeVariable("RESULT"));
+
+
 
                 while (lets.Count > 0)
                     output.Add(lets.Pop());
@@ -205,6 +208,7 @@ namespace SimpleCompiler
                 output.Add(letOP1);
                 output.Add(letOP2);
                 output.Add(letResult);
+                output.Add(letVar);
 
             }
             else
@@ -302,10 +306,7 @@ namespace SimpleCompiler
                 lSimplified.AddRange(SimplifyExpressions(s, lVars));
             return lSimplified;
         }
-        private LetStatement makeLetStatement(string vr1, string vr2, string oper)
-        {
-            return null;
-        }
+
 
  
         public LetStatement ParseStatement(List<Token> lTokens)

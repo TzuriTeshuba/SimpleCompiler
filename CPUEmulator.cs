@@ -430,6 +430,10 @@ namespace SimpleCompiler
 
         private int ComputeExpression(Expression exp, Dictionary<string, int> dValues)
         {
+            if(exp.ToString() == "((x2 + x3) - (x2 - 7))")
+            {
+                string s = "stop for debug here";
+            }
             if (exp is NumericExpression)
             {
                 return ((NumericExpression)exp).Value;

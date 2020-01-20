@@ -16,7 +16,7 @@ namespace SimpleCompiler
             Console.WriteLine("Test 4 started running bro");
             //TestSimplifyLetStatement();
             //TestParseAndErrors();
-            Test3();
+            Test4();
         }
 
         static void InitLCL(List<string> lAssembly)
@@ -192,6 +192,8 @@ namespace SimpleCompiler
             cpu.Run(1000, false);
             if (cpu.M[24] != dValues2["x5"])
                 Console.WriteLine("BUGBUG");
+            Console.WriteLine("End");
+
 
         }
 
@@ -200,6 +202,6 @@ namespace SimpleCompiler
 
 
 
- 
-     }
+
+    }
 }

@@ -1,20 +1,21 @@
 ﻿<Properties StartupConfiguration="{3FBFBD51-DF08-493B-8D74-5E9E1CE7B1DF}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="CPUEmulator.cs">
     <Files>
-      <File FileName="Program.cs" Line="16" Column="50" IsPinned="True" />
+      <File FileName="Program.cs" Line="182" Column="21" IsPinned="True" />
       <File FileName="Compiler.cs" IsPinned="True" />
       <File FileName="LetStatement.cs" />
       <File FileName="BinaryOperationExpression.cs" />
       <File FileName="Expression.cs" />
       <File FileName="Contant.cs" />
       <File FileName="VarDeclaration.cs" />
+      <File FileName="CPUEmulator.cs" Line="421" Column="21" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="SimpleCompiler" expanded="True">
             <Node name="SimpleCompiler" expanded="True">
-              <Node name="Program.cs" selected="True" />
+              <Node name="CPUEmulator.cs" selected="True" />
             </Node>
           </Node>
         </State>
@@ -25,7 +26,9 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.ItemProperties.SimpleCompiler PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/Program.cs" relfile="Program.cs" line="185" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>
