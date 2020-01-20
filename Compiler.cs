@@ -11,6 +11,9 @@ namespace SimpleCompiler
     {
         private char[] delimitters;
         private int numVirtualVars;
+        const int LCL=21;
+        const int RESULT = LCL - 1;
+
 
 
 
@@ -58,6 +61,7 @@ namespace SimpleCompiler
         public List<string> GenerateCode(LetStatement aSimple, Dictionary<string, int> dSymbolTable)
         {
             const int LCL = 20;
+            
             List<string> lAssembly = new List<string>();
             int varIndex =LCL + dSymbolTable[aSimple.Variable.ToString()];
             //add here code for computing a single let statement containing only a simple expression
@@ -115,6 +119,7 @@ namespace SimpleCompiler
 
         public Dictionary<string, int> ComputeSymbolTable(List<VarDeclaration> lDeclerations)
         {
+            const int virtaulsAddress = 100;
             Dictionary<string, int> dTable = new Dictionary<string, int>();
             //add here code to comptue a symbol table for the given var declarations
             //real vars should come before (lower indexes) than artificial vars (starting with _), and their indexes must be by order of appearance.
@@ -124,7 +129,9 @@ namespace SimpleCompiler
             //var int y;
             //the resulting table should be x=0,y=1,_1=2
             //throw an exception if a var with the same name is defined more than once
-
+            dTable.Add("RESULT", LCL-1);
+            dTable.Add("OPERAND1",96);
+            dTable.Add("OPERAND2", 97);
             int numVars = 0;
             for(int i = 0; i < lDeclerations.Count; i++)
             {
@@ -134,19 +141,12 @@ namespace SimpleCompiler
                 if (name[0] != '_')
                 {
                     dTable.Add(name, numVars);
-                    numVars++;
                 }
             }
-            for (int i = 0; i < lDeclerations.Count; i++)
+            for (int i = 0; i <= numVirtualVars; i++)
             {
-                VarDeclaration varDec = lDeclerations[i];
-                string name = varDec.Name;
-                //need to check if variable already exists and throw exception if so??
-                if (name[0] == '_')
-                {
-                    dTable.Add(name, numVars);
-                    numVars++;
-                }
+                dTable.Add("_" + i, virtaulsAddress + i);
+                
             }
             return dTable;
         }
@@ -189,12 +189,12 @@ namespace SimpleCompiler
                 // let OPERATOR1 = _xxx
                 VariableExpression var1 = makeVariable("_" + registers[binExp.Operand1]);
                 binVal.Operand1 = var1;
-                LetStatement letOP1 = makeLetStatement("OPERATOR1", var1);
+                LetStatement letOP1 = makeLetStatement("OPERAND1", var1);
 
                 // let OPERATOR2 = _yyy
                 VariableExpression var2 = makeVariable("_" + registers[binExp.Operand2]);
                 binVal.Operand2 = var2;
-                LetStatement letOP2 = makeLetStatement("OPERATOR2", var2);
+                LetStatement letOP2 = makeLetStatement("OPERAND2", var2);
 
                 // let RESULT= _1
                 LetStatement letResult =  makeLetStatement("RESULT", makeVariable("_" + registers[s.Value]));
@@ -217,12 +217,12 @@ namespace SimpleCompiler
         }
         private bool CheckThatAllVariablesWereDeclared(Expression expression, List<string> varNames)
         {
-            bool output;
-            if (!(expression is BinaryOperationExpression))
+            bool output = true;
+            if (expression is VariableExpression)
             {
                 output = varNames.Contains(expression.ToString());
             }
-            else
+            else if(expression is BinaryOperationExpression)
             {
                 BinaryOperationExpression binExp = (BinaryOperationExpression)expression;
                 output = ((CheckThatAllVariablesWereDeclared(binExp.Operand1, varNames)) && (CheckThatAllVariablesWereDeclared(binExp.Operand2, varNames)));

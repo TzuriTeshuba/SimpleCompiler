@@ -13,7 +13,7 @@ namespace SimpleCompiler
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Test 3 started");
+            Console.WriteLine("Test 4 started running bro");
             //TestSimplifyLetStatement();
             //TestParseAndErrors();
             Test3();
