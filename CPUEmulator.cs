@@ -80,7 +80,7 @@ namespace SimpleCompiler
             for (int i = 0; i < cSteps && PC < Code.Count; i++)
             {
                 lLines.Add(PC);
-                if(lLines.Count > 3 && bBreakInfiniteLoops)
+                if (lLines.Count > 3 && bBreakInfiniteLoops)
                 {
                     if (lLines[i] == lLines[i - 2] && lLines[i - 1] == lLines[i - 3])
                         break;
@@ -92,8 +92,10 @@ namespace SimpleCompiler
                 string sOriginalLine = Code[PC].Trim();
                 string sLine = sOriginalLine.Replace(" ", "");
                 if (sLine.Contains("//"))
+                { 
+                    Console.WriteLine("" + '\t' + sLine);
                     sLine = sLine.Substring(0, sLine.IndexOf("/")).Trim();
-
+                }
                 if (sLine == "")
                 {
                     PC++;
@@ -103,15 +105,12 @@ namespace SimpleCompiler
                 string sMA = "N/A";
                 if (A >= 0 && A < M.Length)
                     sMA = M[A] + "";
-                Console.WriteLine(i + ") A=" + A + ", D=" + D + ", M=" + sMA + ", PC=" + PC + ", line=" + sOriginalLine);
+                Console.WriteLine(""+i + ")"+'\t'+" A=" + A +'\t'+ ", D=" + D + '\t' + ", M=" + sMA + '\t' + ", PC=" + PC + '\t' + ", line=" + '\t' + sOriginalLine.Replace("M","M["+A+"]"));
                 if (sLine == "")
                     continue;
                 if (sLine.StartsWith("@"))
                 {
                     string sValue = sLine.Substring(1);
-                    if (sValue == "RESULT"){
-                        string debugSpot = "debug here";
-                    }
                     int iValue = 0;
                     if (int.TryParse(sValue, out iValue))
                         A = iValue;

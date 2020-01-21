@@ -102,7 +102,7 @@ namespace SimpleCompiler
             List<string> lAssignments = new List<string>();
             lAssignments.Add("let x = 10;");
             lAssignments.Add("let y = 15;");
-            //lAssignments.Add("let z = (x + y);");
+            lAssignments.Add("let z = (x + y);");
 
             List<LetStatement> ls = c.ParseAssignments(lAssignments);
 
@@ -112,8 +112,18 @@ namespace SimpleCompiler
             InitLCL(lAssembly);
             cpu.Code = lAssembly;
             cpu.Run(1000, false);
+            PrintNonZeroIndexes(cpu.M);
             if (cpu.M[22] != 25)
                 Console.WriteLine("BUGBUG");
+        }
+        static void PrintNonZeroIndexes(int[] regs)
+        {
+            string output = "";
+            for(int i = 0; i < regs.Length; i++)
+            {
+                if (i % 1000 == 0) Console.WriteLine("");
+                if (regs[i] != 0) Console.Write("" + i+" : "+regs[i] + '\t');
+            }
         }
         static void Test3()
         {

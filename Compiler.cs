@@ -11,6 +11,10 @@ namespace SimpleCompiler
     {
         private char[] delimitters;
         private int numVirtualVars;
+        private const string OPERAND1 = "OPERAND1";
+        private const string OPERAND2 = "OPERAND2";
+        private const string RESULT = "RESULT";
+
 
         public Compiler()
         {
@@ -58,6 +62,8 @@ namespace SimpleCompiler
             Expression value = aSimple.Value;
             if (value is NumericExpression)
             {
+                lAssembly.Add("//Numeric Value " + aSimple);
+
                 NumericExpression numExp = (NumericExpression)value;
 
                 //next 8 lines rep @var
@@ -65,48 +71,51 @@ namespace SimpleCompiler
                 lAssembly.Add("D=M");
                 lAssembly.Add("@" + dSymbolTable[aSimple.Variable]);
                 lAssembly.Add("D=A+D");//D=a's address
-                lAssembly.Add("@_aAddress");
+                lAssembly.Add("@_a");
                 lAssembly.Add("M=D");
-                lAssembly.Add("@RESULT");
+                lAssembly.Add("@"+RESULT);
                 lAssembly.Add("M=D");
 
                 lAssembly.Add("@" + numExp.Value);
                 lAssembly.Add("D=A");
-                lAssembly.Add("@_aAddress");
+                lAssembly.Add("@_a");
                 lAssembly.Add("A=M");
                 lAssembly.Add("M=D");
-                lAssembly.Add("@RESULT");
+                lAssembly.Add("@"+RESULT);
                 lAssembly.Add("M=D");
 
             }
             else if (value is VariableExpression)
-            {
+            { 
+
+                lAssembly.Add("//Variable value" + aSimple);
+
                 //Example: let a = b;
                 //LCL[a]=LCL[b]
-                VariableExpression varExp = (VariableExpression)value;
-                int valuesIndex = dSymbolTable[varExp.ToString()];
+                VariableExpression valExp = (VariableExpression)value;
+                int valuesIndex = dSymbolTable[valExp.ToString()];
 
                 //first store value of LCL[b] in RESULT
                 lAssembly.Add("@LCL");
                 lAssembly.Add("D=M");
-                lAssembly.Add("@" + dSymbolTable[varExp.ToString()]);
+                lAssembly.Add("@" + dSymbolTable[valExp.ToString()]);
                 lAssembly.Add("A=D+A");
                 lAssembly.Add("D=M");
-                lAssembly.Add("@RESULT");
+                lAssembly.Add("@"+RESULT);
                 lAssembly.Add("M=D");
 
-                //next store a's address in virtual register "aAddress"
+                //next store a's address in virtual register "_a"
                 lAssembly.Add("@LCL");
                 lAssembly.Add("D=M");
-                lAssembly.Add("@" + dSymbolTable[value.ToString()]);
+                lAssembly.Add("@" + dSymbolTable[valExp.ToString()]);
                 lAssembly.Add("D=D+A");
-                lAssembly.Add("@_aAddress");
+                lAssembly.Add("@_a");
                 lAssembly.Add("M=D");
 
                 //update "a"
-                lAssembly.Add("@RESULT");
+                lAssembly.Add("@"+RESULT);
                 lAssembly.Add("D=M");
-                lAssembly.Add("@_aAddress");
+                lAssembly.Add("@_a");
                 lAssembly.Add("A=M");
                 lAssembly.Add("M=D");
 
@@ -123,6 +132,8 @@ namespace SimpleCompiler
 
 
             List<string> lAssembly = new List<string>();
+            lAssembly.Add("//generation started" + aSimple);
+
             //add here code for computing a single let statement containing only a simple expression
             Expression value = aSimple.Value;
             string variable = aSimple.Variable;
@@ -130,8 +141,9 @@ namespace SimpleCompiler
             {
                 lAssembly.AddRange( GenerateCodeForUnaryAssignment(aSimple, dSymbolTable));
             }
-            if(value is BinaryOperationExpression)
+            else if(value is BinaryOperationExpression)
             {
+                lAssembly.Add("//Binary Expression"+ aSimple);
                 //
                 //Example: a = b <op> c
                 //first let a=b
@@ -144,43 +156,45 @@ namespace SimpleCompiler
 
                 //let a=b
                 lAssembly.AddRange(GenerateCodeForUnaryAssignment(letAEqualB, dSymbolTable));
+                lAssembly.Add("@"+RESULT);
+                lAssembly.Add("D=M");
+                lAssembly.Add("@"+OPERAND1);
+                lAssembly.Add("M=D");
+
 
                 //let a = a <op> c
-                if(operand2 is NumericExpression)
+                if (operand2 is NumericExpression)
                 {
+                    lAssembly.Add("//Opearand 2 is Numeric " + aSimple);
+
                     NumericExpression num = (NumericExpression)operand2;
                     lAssembly.Add("@"+num.Value);
                     lAssembly.Add("D=A");
-                    lAssembly.Add("@_aAddress");
+                    lAssembly.Add("@_a");
                     lAssembly.Add("M=M"+binExp.Operator+"D");
                     lAssembly.Add("D=M");
-                    lAssembly.Add("@RESULT");
+                    lAssembly.Add("@"+RESULT);
                     lAssembly.Add("M=D");
                 }
                 else if(operand2 is VariableExpression)
                 {
+                    lAssembly.Add("//Opearand 2 is a Variable " + aSimple);
+
                     VariableExpression c = (VariableExpression)operand2;
                     lAssembly.Add("@LCL");
                     lAssembly.Add("D=M");
                     lAssembly.Add("@"+dSymbolTable[c.Name]);
-                    lAssembly.Add("A=D+A");
                     lAssembly.Add("D=M");
-                    lAssembly.Add("@RESULT");
+                    lAssembly.Add("@"+ dSymbolTable[variable]);
                     lAssembly.Add("M=M"+binExp.Operator+"D");
                     lAssembly.Add("D=M");
-                    lAssembly.Add("@_aAddress");
+
+                    lAssembly.Add("@"+RESULT);
                     lAssembly.Add("M=D");
-                    lAssembly.Add("@RESULT");
-                    lAssembly.Add("M=D");
+
                 }
 
             }
-            //Add RESULT to LCL[0]
-            lAssembly.Add("@RESULT");
-            lAssembly.Add("D=M");
-            lAssembly.Add("@LCL");
-            lAssembly.Add("A=M");
-            lAssembly.Add("M=D");
 
 
             return lAssembly;
@@ -201,10 +215,10 @@ namespace SimpleCompiler
             //var int y;
             //the resulting table should be x=0,y=1,_1=2
             //throw an exception if a var with the same name is defined more than once
-            dTable.Add("OPERAND1",96);
-            dTable.Add("OPERAND2", 97);
-            dTable.Add("_aAddress", 98);
-            dTable.Add("RESULT", 99);
+            dTable.Add(OPERAND1,96);
+            dTable.Add(OPERAND2, 97);
+            dTable.Add("_a", 98);
+            dTable.Add(RESULT, 99);
             int numVars = 0;
             for(int i = 0; i < lDeclerations.Count; i++)
             {
@@ -263,16 +277,16 @@ namespace SimpleCompiler
                 // let OPERATOR1 = _xxx
                 VariableExpression var1 = makeVariable("_" + registers[binExp.Operand1]);
                 binVal.Operand1 = var1;
-                LetStatement letOP1 = makeLetStatement("OPERAND1", var1);
+                LetStatement letOP1 = makeLetStatement(OPERAND1, var1);
 
                 // let OPERATOR2 = _yyy
                 VariableExpression var2 = makeVariable("_" + registers[binExp.Operand2]);
                 binVal.Operand2 = var2;
-                LetStatement letOP2 = makeLetStatement("OPERAND2", var2);
+                LetStatement letOP2 = makeLetStatement(OPERAND2, var2);
 
                 // let RESULT= _1 and variable=RESULT
-                LetStatement letResult =  makeLetStatement("RESULT", makeVariable("_" + registers[s.Value]));
-                LetStatement letVar = makeLetStatement(s.Variable, makeVariable("RESULT"));
+                LetStatement letResult =  makeLetStatement(RESULT, makeVariable("_" + registers[s.Value]));
+                LetStatement letVar = makeLetStatement(s.Variable, makeVariable(RESULT));
 
 
 

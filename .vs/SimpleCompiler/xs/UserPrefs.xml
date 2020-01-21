@@ -1,8 +1,8 @@
 ﻿<Properties StartupConfiguration="{3FBFBD51-DF08-493B-8D74-5E9E1CE7B1DF}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="Compiler.cs">
     <Files>
-      <File FileName="Program.cs" Line="90" Column="1" IsPinned="True" />
-      <File FileName="Compiler.cs" Line="133" Column="56" IsPinned="True" />
+      <File FileName="Program.cs" Line="116" Column="1" IsPinned="True" />
+      <File FileName="Compiler.cs" Line="151" Column="32" IsPinned="True" />
       <File FileName="CPUEmulator.cs" IsPinned="True" />
       <File FileName="LetStatement.cs" />
       <File FileName="BinaryOperationExpression.cs" />
@@ -10,6 +10,17 @@
       <File FileName="Contant.cs" />
       <File FileName="VarDeclaration.cs" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="SimpleCompiler" expanded="True">
+            <Node name="SimpleCompiler" expanded="True">
+              <Node name="Compiler.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
@@ -18,8 +29,8 @@
     <BreakpointStore>
       <Breakpoint file="/Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/Program.cs" relfile="Program.cs" line="196" column="1" />
       <Breakpoint file="/Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/Program.cs" relfile="Program.cs" line="90" column="1" />
-      <Breakpoint file="/Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/Compiler.cs" relfile="Compiler.cs" line="125" column="1" />
-      <Breakpoint file="/Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/Compiler.cs" relfile="Compiler.cs" line="180" column="1" />
+      <Breakpoint file="/Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/Program.cs" relfile="Program.cs" line="139" column="1" />
+      <Breakpoint file="/Users/mr.t/Desktop/MMM/Ex3.3/SimpleCompiler/Program.cs" relfile="Program.cs" line="116" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
